@@ -3,7 +3,7 @@ import CatchButton from "@/components/CatchButton";
 import CombineButton from "@/components/CombineButton";
 import CountButton from "@/components/CountButton";
 import Diamond from "@/components/Diamond";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 
 const imageAnimal = [
@@ -28,12 +28,11 @@ const animalCounts: any = {
   
 
 function CatchAnimal (){
+    const [animals, setAnimals] = useState<any>(animalCounts);
     const [catchAnimal, setCatchAnimal] = useState("");
     const [isCombined, setIsCombined] = useState(true);
     const [isCombinationSuccess, setIsCombinationSuccess] = useState(false);
-    const [animals, setAnimals] = useState<any>({});
     const [isShowMsg, setIsShowMsg] = useState(false);
-    console.log(animals);
 
     const fetchCatchAnimals = async () => {
         const data = await fetch("/api/animals/catch")
@@ -70,11 +69,12 @@ function CatchAnimal (){
         return data;
     };
 
-    const getAnimals = async () => {
+    const getAnimals = useCallback(async()=>{
         const data = await fectAnimals();
         setAnimals(data);
         setIsCombined(checkDisableCombinebtn(data));
-    };
+        
+    }, [isCombined]) 
 
 
     useEffect(()=>{
@@ -83,15 +83,15 @@ function CatchAnimal (){
 
     
     
-    const handleCatch = async() => {
+    const handleCatch = useCallback(async()=>{
         const animal = await fetchCatchAnimals();
         const updatedAnimals = await updateCountAnimal(animal);
         setCatchAnimal(animal);
         setAnimals(updatedAnimals);
         setIsCombined(checkDisableCombinebtn(updatedAnimals));
-      };
+    }, [])
 
-      const checkDisableCombinebtn = (animals: any)=>{
+    const checkDisableCombinebtn = (animals: any)=>{
         const totalCaughtAnimals: any = Object.values(animals).reduce((sum: any, count: any) => {
             if(count){
                 sum = sum + 1
@@ -99,18 +99,18 @@ function CatchAnimal (){
             return sum;
         }, 0);
         return totalCaughtAnimals < 7
-      }
+    }
       
-
-      const handleCombine = async() => {
+    const handleCombine = useCallback( async()=>{
         const data = await checkCombination();
         setIsCombinationSuccess(data.success);
         setIsShowMsg(true);
         setTimeout(() => {
             setIsShowMsg(false);
+            setIsCombinationSuccess(false);
         }, 3000);
         getAnimals();
-      };
+    }, [isCombined])
       
     
     return (

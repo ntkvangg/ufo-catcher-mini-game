@@ -1,14 +1,4 @@
 import Animal from "../model/animalModel.js";
-
-const animalProbabilities = [
-    { animal: "chicken", probability: 0.15 },
-    { animal: "duck", probability: 0.15 },
-    { animal: "rabbit", probability: 0.15 },
-    { animal: "pig", probability: 0.10 },
-    { animal: "sheep", probability: 0.10 },
-    { animal: "horse", probability: 0.05 },
-    { animal: "cow", probability: 0.05 },
-];
   
 export const catchAnimal = ()=> {
     const animals = [
