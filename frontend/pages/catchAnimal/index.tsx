@@ -113,7 +113,7 @@ function CatchAnimal (){
         setMessage(message);
         setTimeout(() => {
             setMessage("")
-        }, 3000);
+        }, 10000);
     }
       
     const handleCombine = useCallback( async()=>{
@@ -128,7 +128,7 @@ function CatchAnimal (){
             setTimeout(() => {
                 setMessage("");
                 setIsCombinationSuccess(false);
-            }, 3000);
+            }, 10000);
             getAnimals();
         }catch(error: any){
             handleError(error.message);
