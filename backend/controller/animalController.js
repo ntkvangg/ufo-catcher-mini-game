@@ -1,11 +1,4 @@
 import Animal from "../model/animalModel.js";
-
-export class NotEnoughAnimalsError extends Error {
-    constructor(message) {
-      super(message);
-      this.name = "NotEnoughAnimalsError";
-    }
-}
   
 export const catchAnimal = ()=> {
     const animals = [
@@ -36,7 +29,7 @@ export const handleCombine = async () => {
     const animalDoc = await Animal.findOne({}).exec();
     const animalCounts = animalDoc.toObject();
     for(const key in animalCounts){
-        if(!animalCounts[key]) throw new NotEnoughAnimalsError("Animals cannot be combined because they have already been combined in another session!");
+        if(!animalCounts[key]) throw ({name: "Error", status: 403, message: "Animals cannot be combined because they have already been combined in another session!"});
         Animal.findOneAndUpdate({}, { [key]: animalCounts[key] - 1 }).exec();
     }
     if(isSuccess) return { success: true }  

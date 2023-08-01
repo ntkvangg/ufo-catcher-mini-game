@@ -1,6 +1,7 @@
 import express from 'express';
 import Animal from '../model/animalModel.js';
-import {catchAnimal, updateCountAnimal, handleCombine, NotEnoughAnimalsError}  from '../controller/animalController.js';
+import {catchAnimal, updateCountAnimal, handleCombine}  from '../controller/animalController.js';
+import Diamond from '../model/diamondModel.js';
 
 const animalRouter = express.Router();
 
@@ -28,7 +29,7 @@ animalRouter.get('/catch', (req, res) => {
         res.json(animal);   
     }catch(error){
         res.status(500).json({ message: "Internal server error" });
-    }   
+    }
 });
 
 animalRouter.post('/', async (req, res) => {
@@ -45,13 +46,38 @@ animalRouter.post('/', async (req, res) => {
 animalRouter.get('/combine', async (req, res, next) => {
     try {
         const data = await handleCombine();
+        if(data.success){
+          const diamondDoc = await Diamond.findOne({}).exec();
+          let diamondCount = diamondDoc.toObject();
+          if(!diamondDoc){
+            const newDiamond = new Diamond();
+            await newDiamond.save();
+            diamondCount = newDiamond.toObject();
+          }
+          diamondCount.total += 1;
+          Diamond.findOneAndUpdate({}, {'total': diamondCount.total})
+        }
         res.json(data);
       } catch (error) {
-        if (error instanceof NotEnoughAnimalsError) {
+        if (error.status === 403) {
           res.status(403).json({ message: error.message, status: 403 });
         } else {
           res.status(500).json({ message: "Internal server error", status: 500 });
         }
     }
 });
+
+animalRouter.get('/diamonds', async (req, res)=>{
+    try{
+      const diamondDoc = await Diamond.findOne({}).exec();
+      if(!diamondDoc){
+        const newDiamond = new Diamond();
+        await newDiamond.save();
+        return newDiamond.toObject();
+      }
+      return diamondDoc.toObject();
+    }catch(error){
+        res.status(500).json("Server error");
+    }
+})
 export default animalRouter;

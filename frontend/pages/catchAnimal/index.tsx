@@ -4,6 +4,7 @@ import CombineButton from "@/components/CombineButton";
 import CountButton from "@/components/CountButton";
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
+import axios from 'axios';
 
 const imageAnimal = [
     "chicken",
@@ -31,42 +32,57 @@ function CatchAnimal (){
     const [catchAnimal, setCatchAnimal] = useState("");
     const [isCombined, setIsCombined] = useState(true);
     const [isCombinationSuccess, setIsCombinationSuccess] = useState(false);
-    // const [isShowMsg, setIsShowMsg] = useState(false);
     const [message, setMessage] = useState("");
 
+
+    const handleError = (response: any)=>{
+        if(response.status === 404){
+            throw {name: 'Error', message: "Page not found", status: 404};
+        }else if(response.status === 403){
+            throw {name: "Error", message: "Forbiden", status: 403};
+        }else if(response.status === 500){
+            throw {name: "Error", message: "Error server", status: 500}
+        }else if(!response.ok){
+            throw {name: "Error", message: `Error! status: ${response.status}`};
+        }
+    }
+
+    const fetchDiamonds = async ()=>{
+        const response = await fetch("/api/diamonds");
+        console.log(response);
+    }
+
     const fetchCatchAnimals = async () => {
-        const data = await fetch("/api/animals/catch")
-          .then((response) => response.json())
-          .then((data) => { return data;})
-          .catch((error) => {return error;});
+        const response = await fetch("/api/animals/catch");
+        handleError(response);
+        const data = await response.json();
         return data;
     }
 
     const updateCountAnimal = async (animal: any) => {
-        const data = await fetch(`/api/animals`, {
+        const response = await fetch(`/api/animals`, {
             method: "POST",
             body: JSON.stringify({ animal }),
             headers: { "Content-Type": "application/json" }
-        }).then((response) => response.json())
-        .then((data) => { return data;})
-        .catch((error) => {return error;});
+        });
+        handleError(response);
+        const data = await response.json();
         return data;
     }
 
     const fectAnimals = async () => {
-        const data = await fetch("/api/animals")
-          .then((response) => response.json())
-          .then((data) => { return data;})
-          .catch((error) => {return error;});
+        const response = await fetch("/api/animals");
+        handleError(response);
+        const data = await response.json();
         return data;
     }
 
+    
     const checkCombination = async () => {
-        const data = await fetch("/api/animals/combine")
-        .then((response) => response.json())
-        .then((data) => {return data;})
-        .catch((error) => {return error;});
-        return data;
+        const response = await fetch("/api/animals/combine");
+        handleError(response);
+        const data = await response.json();
+        return data;      
     }
 
     const getAnimals = useCallback(async()=>{
@@ -75,14 +91,14 @@ function CatchAnimal (){
             setAnimals(data);
             setIsCombined(checkDisableCombinebtn(data));
         }catch(error: any){
-            handleError(error.message);
-        }
-        
-    }, [isCombined]) 
+            handleErrorMsg(error.message);
+        }       
+    }, []) 
 
 
     useEffect(()=>{
         getAnimals();
+        fetchDiamonds();
     }, [])
 
     
@@ -95,7 +111,7 @@ function CatchAnimal (){
             setAnimals(updatedAnimals);
             setIsCombined(checkDisableCombinebtn(updatedAnimals));
         }catch(error: any){
-            handleError(error.message);
+            handleErrorMsg(error.message);
         }
     }, [])
 
@@ -109,7 +125,7 @@ function CatchAnimal (){
         return totalCaughtAnimals < 7
     }
 
-    const handleError = (message: string)=>{
+    const handleErrorMsg = (message: string)=>{
         setMessage(message);
         setTimeout(() => {
             setMessage("")
@@ -118,12 +134,8 @@ function CatchAnimal (){
       
     const handleCombine = useCallback( async()=>{
         try{
-            const data = await checkCombination();
-            if(data.status === 403){
-                setMessage(data.message);
-            }else{
-                setMessage(data.success ? "Congratulations! You have extracted a diamond!" : "Oops! The combination failed.");
-            }
+            const data: any = await checkCombination();
+            setMessage(data.success ? "Congratulations! You have extracted a diamond!" : "Oops! The combination failed.");
             setIsCombinationSuccess(data.success);
             setTimeout(() => {
                 setMessage("");
@@ -131,14 +143,16 @@ function CatchAnimal (){
             }, 10000);
             getAnimals();
         }catch(error: any){
-            handleError(error.message);
+            handleErrorMsg(error.status === 403 ? "Animals cannot be combined because they have already been combined in another session!" : error.message);
         }
-        
     }, [isCombined])
       
     
     return (
-        <>
+        <div className="wrapper">
+            <div className="select-app">
+
+            </div>
             <div className="mini-game-content text-center">
                 <div className="card-image">
                     {
@@ -178,7 +192,7 @@ function CatchAnimal (){
                 </div>
                 
             </div>
-        </>
+        </div>
        
     )
 }
