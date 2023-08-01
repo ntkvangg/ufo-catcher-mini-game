@@ -1,14 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: '/api/:path*',
-  //       destination: 'http://localhost:5000/api/:path*',
-  //     },
-  //   ]
-  // }
+  reactStrictMode: false,
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://ufo-catcher-mini-game-backend.vercel.app/api/:path*',
+      },
+    ];
+  },
 }
 
 module.exports = nextConfig
