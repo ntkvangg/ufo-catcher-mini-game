@@ -6,7 +6,7 @@ import {memo} from 'react';
 
 function CountButton({count}: Props){
     return (
-        <button className="circle-button">{count}</button>
+        <button className="button circle-button">{count}</button>
         
     )
 }

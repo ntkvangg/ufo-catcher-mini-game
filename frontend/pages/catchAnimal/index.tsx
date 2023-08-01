@@ -2,7 +2,6 @@ import Animal from "@/components/Animal";
 import CatchButton from "@/components/CatchButton";
 import CombineButton from "@/components/CombineButton";
 import CountButton from "@/components/CountButton";
-import Diamond from "@/components/Diamond";
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 
@@ -32,7 +31,8 @@ function CatchAnimal (){
     const [catchAnimal, setCatchAnimal] = useState("");
     const [isCombined, setIsCombined] = useState(true);
     const [isCombinationSuccess, setIsCombinationSuccess] = useState(false);
-    const [isShowMsg, setIsShowMsg] = useState(false);
+    // const [isShowMsg, setIsShowMsg] = useState(false);
+    const [message, setMessage] = useState("");
 
     const fetchCatchAnimals = async () => {
         const data = await fetch("/api/animals/catch")
@@ -67,12 +67,16 @@ function CatchAnimal (){
         .then((data) => {return data;})
         .catch((error) => {return error;});
         return data;
-    };
+    }
 
     const getAnimals = useCallback(async()=>{
-        const data = await fectAnimals();
-        setAnimals(data);
-        setIsCombined(checkDisableCombinebtn(data));
+        try{
+            const data = await fectAnimals();
+            setAnimals(data);
+            setIsCombined(checkDisableCombinebtn(data));
+        }catch(error: any){
+            handleError(error.message);
+        }
         
     }, [isCombined]) 
 
@@ -84,11 +88,15 @@ function CatchAnimal (){
     
     
     const handleCatch = useCallback(async()=>{
-        const animal = await fetchCatchAnimals();
-        const updatedAnimals = await updateCountAnimal(animal);
-        setCatchAnimal(animal);
-        setAnimals(updatedAnimals);
-        setIsCombined(checkDisableCombinebtn(updatedAnimals));
+        try{
+            const animal = await fetchCatchAnimals();
+            const updatedAnimals = await updateCountAnimal(animal);
+            setCatchAnimal(animal);
+            setAnimals(updatedAnimals);
+            setIsCombined(checkDisableCombinebtn(updatedAnimals));
+        }catch(error: any){
+            handleError(error.message);
+        }
     }, [])
 
     const checkDisableCombinebtn = (animals: any)=>{
@@ -100,60 +108,77 @@ function CatchAnimal (){
         }, 0);
         return totalCaughtAnimals < 7
     }
+
+    const handleError = (message: string)=>{
+        setMessage(message);
+        setTimeout(() => {
+            setMessage("")
+        }, 3000);
+    }
       
     const handleCombine = useCallback( async()=>{
-        const data = await checkCombination();
-        setIsCombinationSuccess(data.success);
-        setIsShowMsg(true);
-        setTimeout(() => {
-            setIsShowMsg(false);
-            setIsCombinationSuccess(false);
-        }, 3000);
-        getAnimals();
+        try{
+            const data = await checkCombination();
+            if(data.status === 403){
+                setMessage(data.message);
+            }else{
+                setMessage(data.success ? "Congratulations! You have extracted a diamond!" : "Oops! The combination failed.");
+            }
+            setIsCombinationSuccess(data.success);
+            setTimeout(() => {
+                setMessage("");
+                setIsCombinationSuccess(false);
+            }, 3000);
+            getAnimals();
+        }catch(error: any){
+            handleError(error.message);
+        }
+        
     }, [isCombined])
       
     
     return (
-        
-        <div className="mini-game text-center">
-            <div className="card-image">
-                {
-                    catchAnimal ? 
-                        <Animal type={catchAnimal} width={200} height={150}/>
+        <>
+            <div className="mini-game-content text-center">
+                <div className="card-image">
+                    {
+                        catchAnimal ? 
+                            <Animal type={catchAnimal} width={200} height={150}/>
+                        :
+                            <Image src="/images/question.svg" alt="Catch animal" width={200} height={150}/>
+                    }
+                </div>
+                <CatchButton onClick={handleCatch} />
+                <div className="wrapper-list-animal">
+                    <div className="list-animal">
+                        {imageAnimal.map((item, index)=>(
+                            <Animal type={item} width={40} height={40} key={index}/>
+                        ))}
+                    </div>
+                    <div className="count-animal">
+                        {imageAnimal.map((animal, index) => (
+                            <CountButton count={animals[animal]} key={index}/>
+                        ))}
+                    </div>
+                </div>
+                <CombineButton onClick={handleCombine} isDisabled={isCombined}/>
+                <div className="result mt-10">
+                    {isCombinationSuccess ? 
+                    <div>
+                        <Image src="/images/diamond.png" alt="Diamond" width={60} height={60}/>
+                        {message && <p>{message}</p>}
+                    </div>
                     :
-                        <Image src="/images/question.svg" alt="Catch animal" width={50} height={50}/>
-                }
-            </div>
-            <CatchButton onClick={handleCatch} />
-            <div className="wrapper-list-animal">
-                <div className="list-animal">
-                    {imageAnimal.map((item, index)=>(
-                        <Animal type={item} width={40} height={40} key={index}/>
-                    ))}
-                </div>
-                <div className="count-animal">
-                    {imageAnimal.map((animal, index) => (
-                        <CountButton count={animals[animal]} key={index}/>
-                    ))}
-                </div>
-            </div>
-            <CombineButton onClick={handleCombine} isDisabled={isCombined}/>
-            <div className="result mt-10">
-                {isCombinationSuccess ? 
-                <div>
-                    <Image src="/images/diamond.png" alt="Diamond" width={60} height={60}/>
-                    {isShowMsg && <p>Congratulations! You have extracted a diamond!</p>}
-                </div>
-                :
-                <div>
-                    <Image width={40} height={40} src="/images/question.svg" alt="question"/>
-                    {isShowMsg && <p>Oops! The combination failed.</p>}
+                    <div>
+                        <Image width={40} height={40} src="/images/question.svg" alt="question"/>
+                        {message && <p>{message}</p>}
+                    </div>
+                    
+                    }
                 </div>
                 
-                }
             </div>
-            
-        </div>
+        </>
        
     )
 }

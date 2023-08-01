@@ -1,6 +1,6 @@
 import express from 'express';
 import Animal from '../model/animalModel.js';
-import {catchAnimal, updateCountAnimal, handleCombine}  from '../controller/animalController.js';
+import {catchAnimal, updateCountAnimal, handleCombine, NotEnoughAnimalsError}  from '../controller/animalController.js';
 
 const animalRouter = express.Router();
 
@@ -18,7 +18,7 @@ animalRouter.get('/', async (req, res) => {
         res.json(animalDoc.toObject());
       } catch (error) {
         console.error("Error handling /animals request:", error);
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ message: "Internal server error" });
     }
 });
 
@@ -27,7 +27,7 @@ animalRouter.get('/catch', (req, res) => {
         const animal = catchAnimal();
         res.json(animal);   
     }catch(error){
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ message: "Internal server error" });
     }   
 });
 
@@ -37,17 +37,21 @@ animalRouter.post('/', async (req, res) => {
         const data = await updateCountAnimal(animal);
         res.json(data);
     }catch(error){
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ message: "Internal server error" });
     }
     
 });
 
-animalRouter.get('/combine', async (req, res) => {
-    try{
+animalRouter.get('/combine', async (req, res, next) => {
+    try {
         const data = await handleCombine();
         res.json(data);
-    }catch(error){
-        res.status(500).json({ error: "Internal server error" });
+      } catch (error) {
+        if (error instanceof NotEnoughAnimalsError) {
+          res.status(403).json({ message: error.message, status: 403 });
+        } else {
+          res.status(500).json({ message: "Internal server error", status: 500 });
+        }
     }
 });
 export default animalRouter;

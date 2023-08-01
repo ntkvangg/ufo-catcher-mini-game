@@ -108,14 +108,11 @@ a {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #fefefe;
   color: #0d2943;
   text-align: center;
-  cursor: pointer;
-  margin:0;
-  outline: 0;
-  border: 0;
-  box-shadow: 0px 1px 5px 1px #B8CCE0;
+  background: #F1F5F9;
+  box-shadow: -8px -8px 16px 0px #FFF, 8px 8px 16px 0px #C9D9E8;
+
 }
 
 .button{
@@ -127,7 +124,7 @@ a {
 
 .button:disabled{
   opacity: 0.5;
-  cursor: no;
+  cursor: not-allowed;
 }
 
 .count-animal{
@@ -138,19 +135,22 @@ a {
   
 }
 .button-action{
-  font-weight: 500;
-  padding: .5rem 2.5rem;
+  font-weight: bold;
+  padding: .75rem 2.5rem;
   font-size: .8rem;
-  border-radius: .3rem;
+  border-radius: 0.65rem;
   text-transform: uppercase;
   vertical-align: middle;
+  width: 10rem;
 }
 .button-combine{
-  background-color: #D2F4FF;
   color: #36597D;
+  background: #D2F4FF;
+  box-shadow: -8px -8px 16px 0px #FFF, 8px 8px 16px 0px #E1EBF4;
 }
 .button-catch{
-  background-color: #FFD2D2;
+  background: #FFD2D2;
+  box-shadow: -8px -8px 16px 0px #FFF, 8px 8px 16px 0px #E1EBF4;
   color: #36597D
 }
 .text-center{
@@ -165,9 +165,15 @@ a {
 
 .card-image{
   background: #F1F5F9;
-    border-radius: 0.5rem;
-    border: solid 1px #C9D9E8;
-    padding: 1rem 0;
+  border-radius: 0.5rem;
+  border: solid 1px #C9D9E8;
+  padding: 1rem 0;
+}
+
+.mini-game-content{
+  max-width: 20rem;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
 @media (prefers-color-scheme: dark) {
