@@ -12,7 +12,6 @@ animalRouter.get('/', async (req, res) => {
         // If there's no document, create a new one with default values
         if (!animalDoc) {
           const newAnimal = new Animal();
-          console.log(newAnimal, 'newAnimal');
           await newAnimal.save({ timestamps: { createdAt: false, updatedAt: false } });
           return res.json(newAnimal.toObject());
         }
@@ -56,7 +55,7 @@ animalRouter.get('/combine', async (req, res, next) => {
             diamondCount = newDiamond.toObject();
           }
           diamondCount.total += 1;
-          Diamond.findOneAndUpdate({}, {'total': diamondCount.total})
+          Diamond.findOneAndUpdate({}, {'total': diamondCount.total}).exec();
         }
         res.json(data);
       } catch (error) {
