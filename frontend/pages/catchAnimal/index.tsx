@@ -4,7 +4,6 @@ import CombineButton from "@/components/CombineButton";
 import CountButton from "@/components/CountButton";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Image from "next/image";
-import { get } from "http";
 
 const imageAnimal = [
     "chicken",
@@ -14,7 +13,7 @@ const imageAnimal = [
     "sheep",
     "horse",
     "cow"
-]
+];
 
 const animalCounts: any = {
     "chicken": 0,
@@ -38,76 +37,33 @@ function CatchAnimal (){
     const [countPercentAnimals, setCountPercentAnimals] = useState<any>(animalCounts);
 
 
-    const handleError = (response: any)=>{
-        if(response.status === 404){
-            throw {name: 'Error', message: "Page not found", status: 404};
-        }else if(response.status === 403){
-            throw {name: "Error", message: "Forbiden", status: 403};
-        }else if(response.status === 500){
-            throw {name: "Error", message: "Error server", status: 500}
-        }else if(!response.ok){
-            throw {name: "Error", message: `Error! status: ${response.status}`};
+    const fetchApi = async (url: string, method?: string, body?: any, headers?: any) => {
+        const response = await fetch(url, {method: method ? method : "GET", headers, body});
+        if(!response.ok){
+            throw {name: "Error", message: response.statusText, status: response.status};
         }
-    }
-
-    const fetchDiamonds = async ()=>{
-        const response = await fetch("/api/animals/diamonds");
-        handleError(response);
-        const data = await response.json();
-        return data;
+        return response.json();
     }
 
     const getDiamonds = async ()=>{
         try{
-            const data = await fetchDiamonds();
+            const data = await fetchApi("/api/animals/diamonds");
             setTotalDiamond(data.total);
         }catch(error: any){
             handleErrorMsg(error.message);
         }
     }
 
-    const fetchCatchAnimals = async () => {
-        const response = await fetch("/api/animals/catch");
-        handleError(response);
-        const data = await response.json();
-        return data;
-    }
-
-    const updateCountAnimal = async (animal: any) => {
-        const response = await fetch(`/api/animals`, {
-            method: "POST",
-            body: JSON.stringify({ animal }),
-            headers: { "Content-Type": "application/json" }
-        });
-        handleError(response);
-        const data = await response.json();
-        return data;
-    }
-
-    const fectAnimals = async () => {
-        const response = await fetch("/api/animals");
-        handleError(response);
-        const data = await response.json();
-        return data;
-    }
-
-    
-    const checkCombination = async () => {
-        const response = await fetch("/api/animals/combine");
-        handleError(response);
-        const data = await response.json();
-        return data;      
-    }
-
-    const getAnimals = useCallback(async()=>{
+    const getAnimals = async () => {
         try{
-            const data = await fectAnimals();
+            const data = await fetchApi("/api/animals");
             setAnimals(data);
             setIsCombined(checkDisableCombinebtn(data));
         }catch(error: any){
             handleErrorMsg(error.message);
-        }       
-    }, []) 
+        }
+    }
+
 
     useEffect(()=>{
         getAnimals();
@@ -118,8 +74,8 @@ function CatchAnimal (){
     
     const handleCatch = useCallback(async()=>{
         try{
-            const animal = await fetchCatchAnimals();
-            const updatedAnimals = await updateCountAnimal(animal);
+            const animal = await fetchApi("/api/animals/catch");
+            const updatedAnimals = await fetchApi(`/api/animals`, "POST", JSON.stringify({ animal }), { "Content-Type": "application/json" });
             setCatchAnimal(animal);
             setAnimals(updatedAnimals);
             setIsCombined(checkDisableCombinebtn(updatedAnimals));
@@ -147,7 +103,7 @@ function CatchAnimal (){
       
     const handleCombine = useCallback( async()=>{
         try{
-            const data: any = await checkCombination();
+            const data = await fetchApi("/api/animals/combine");
             handleErrorMsg(data.success ? "Congratulations! You have extracted a diamond!" : "Oops! The combination failed.");
             if(data.success){
                 getDiamonds();
@@ -175,7 +131,7 @@ function CatchAnimal (){
     }
       
 
-    function proveWeightedRandomGenerator() {
+    const proveWeightedRandomGenerator = ()=> {
         const countAnimal: any = {}
         const countPercentAnimal: any = {}
         const timeCatching = parseInt(timeTest.toString());
