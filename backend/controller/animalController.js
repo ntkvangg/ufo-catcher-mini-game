@@ -8,11 +8,12 @@ export const catchAnimal = ()=> {
         "pig", "pig",
         "sheep", "sheep",
         "horse",
-        "cow"
+        "cow",
+        "empty", "empty", "empty", "empty", "empty"
     ];
     const randomAnimalIndex = Math.floor(Math.random() * animals.length);
     return animals[randomAnimalIndex];
-}
+};
 
 export const updateCountAnimal = async (animal) => {
     const animalDoc = await Animal.findOne({}).exec();

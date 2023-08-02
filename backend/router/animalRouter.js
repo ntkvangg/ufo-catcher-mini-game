@@ -12,6 +12,7 @@ animalRouter.get('/', async (req, res) => {
         // If there's no document, create a new one with default values
         if (!animalDoc) {
           const newAnimal = new Animal();
+          console.log(newAnimal, 'newAnimal');
           await newAnimal.save({ timestamps: { createdAt: false, updatedAt: false } });
           return res.json(newAnimal.toObject());
         }
@@ -73,9 +74,9 @@ animalRouter.get('/diamonds', async (req, res)=>{
       if(!diamondDoc){
         const newDiamond = new Diamond();
         await newDiamond.save();
-        return newDiamond.toObject();
+        return res.json(newDiamond.toObject());
       }
-      return diamondDoc.toObject();
+      res.json(diamondDoc.toObject());
     }catch(error){
         res.status(500).json("Server error");
     }

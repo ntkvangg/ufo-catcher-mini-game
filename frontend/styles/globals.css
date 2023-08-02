@@ -105,8 +105,8 @@ a {
 }
 .circle-button{
   display: inline-block;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   color: #0d2943;
   text-align: center;
@@ -168,14 +168,68 @@ a {
   border-radius: 0.5rem;
   border: solid 1px #C9D9E8;
   padding: 1rem 0;
+  height: 13rem;
 }
 
-.mini-game-content{
-  max-width: 20rem;
+input[type="text"]{
+  font-size: 20px;
+}
+.card-testing{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 12rem;
+}
+
+.input-testing{
+  border-radius: 0.625rem;
+  background: #D9D9D9;
+  box-shadow: 1px 1px 0px 0px rgba(146, 141, 141, 0.25) inset;
+  border: none;
+  outline: none;
   padding: 1rem;
-  box-sizing: border-box;
+  font-size: .8rem;
+}
+.mini-game-content{
+  width: 22rem
+}
+.count-percent{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+.text-percent{
+  color: #36597D;
+  font-size: .85rem;
+  font-weight: bold;
 }
 
+.text-label-time-catching{
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.total-catching{
+  text-align: left;
+  margin-top: 1rem;
+}
+.select-app{
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.button-toggle{
+  padding: .8rem;
+  background-color: #36597D;
+  color: #fff;
+  border-radius: .5rem;
+  font-size: 1rem;
+}
+.mt-1{
+  margin-top: .5rem;
+}
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
