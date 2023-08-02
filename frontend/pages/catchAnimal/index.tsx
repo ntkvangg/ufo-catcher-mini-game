@@ -29,7 +29,7 @@ const animalCounts: any = {
 
 function CatchAnimal (){
     const [animals, setAnimals] = useState<any>(animalCounts);
-    const [catchAnimal, setCatchAnimal] = useState("");
+    const [catchAnimal, setCatchAnimal] = useState("empty");
     const [isCombined, setIsCombined] = useState(true);
     const [message, setMessage] = useState("");
     const [totalDiamond, setTotalDiamond] = useState(0); 
