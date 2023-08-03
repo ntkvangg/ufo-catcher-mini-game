@@ -204,9 +204,9 @@ function CatchAnimal (){
                                 <Image src="/images/question.svg" alt="Catch animal" style={{maxWidth: '100%'}} width={150} height={150}/>
                         :
                         <div className="card-testing">
-                            <p>Weighted Random Animal Generation Testing Tool</p>
+                            <p className="text-dark">Weighted Random Animal Generation Testing Tool</p>
                             <div className="form-catch">
-                                <label className="text-label-time-catching">Times to catch</label>
+                                <label className="text-label-time-catching text-dark">Times to catch</label>
                                 <div>
                                     <input className="input-testing" type="text" value={timeTest} onChange={(e: any)=> setTimeTest(e.target.value)}/>
                                 </div>
@@ -252,8 +252,8 @@ function CatchAnimal (){
                             {message && <p>{message}</p>}
                         </div> 
                     </>: <div className="total-catching">
-                        <p>Succes: {totalSuccessCatching} ~ {totalSuccessPercentCatching} %</p>
-                        <p>Failed: {animals.empty} ~ {countPercentAnimals.empty} %</p>
+                        <p className="text-dark">Succes: {totalSuccessCatching} ~ {totalSuccessPercentCatching} %</p>
+                        <p className="text-dark">Failed: {animals.empty} ~ {countPercentAnimals.empty} %</p>
                         </div>}
             </div>
         </div>

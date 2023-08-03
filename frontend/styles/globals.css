@@ -230,6 +230,9 @@ input[type="text"]{
 .mt-1{
   margin-top: .5rem;
 }
+.text-dark{
+  color: #333;
+}
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
