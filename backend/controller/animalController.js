@@ -31,7 +31,7 @@ export const handleCombine = async () => {
     const animalCounts = animalDoc.toObject();
     for(const key in animalCounts){
         if(!animalCounts[key]) throw ({name: "Error", status: 403, message: "Animals cannot be combined because they have already been combined in another session!"});
-        Animal.findOneAndUpdate({}, { [key]: animalCounts[key] - 1 }).exec();
+        await Animal.findOneAndUpdate({}, { [key]: animalCounts[key] - 1 }).exec();
     }
     if(isSuccess) return { success: true }  
     return { success: false };
