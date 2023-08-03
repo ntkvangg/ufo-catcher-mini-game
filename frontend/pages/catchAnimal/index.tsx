@@ -244,12 +244,12 @@ function CatchAnimal (){
                         <div className="result mt-10">
                             {totalDiamond > 0 ? 
                                 <div className="total-diamond">
-                                    <p>x {totalDiamond}</p><Image src="/images/diamond.png" alt="Diamond" width={60} height={60}/>
+                                    <p className="text-dark">x {totalDiamond}</p><Image src="/images/diamond.png" alt="Diamond" width={60} height={60}/>
                                 </div>
                                 :
                                 <Image width={40} height={40} src="/images/question.svg" alt="question"/>
                             }
-                            {message && <p>{message}</p>}
+                            {message && <p className="text-dark">{message}</p>}
                         </div> 
                     </>: <div className="total-catching">
                         <p className="text-dark">Succes: {totalSuccessCatching} ~ {totalSuccessPercentCatching} %</p>
