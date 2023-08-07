@@ -35,6 +35,7 @@ function CatchAnimal (){
     const [toggle, setToggle] = useState(false);
     const [timeTest, setTimeTest] = useState(1000);
     const [countPercentAnimals, setCountPercentAnimals] = useState<any>(animalCounts);
+    const [isAnimationCatching, setIsAnimationCatching] = useState(false);
 
 
     const fetchApi = async (url: string, method?: string, body?: any, headers?: any) => {
@@ -79,6 +80,10 @@ function CatchAnimal (){
             setCatchAnimal(animal);
             setAnimals(updatedAnimals);
             setIsCombined(checkDisableCombinebtn(updatedAnimals));
+            setIsAnimationCatching(true);
+            setTimeout(() => {
+                setIsAnimationCatching(false);
+            }, 1000)
         }catch(error: any){
             handleErrorMsg(error.message);
         }
@@ -196,7 +201,7 @@ function CatchAnimal (){
                 <button className="button button-toggle" onClick={handleToggleApp}>{toggle ? 'Play gane' : 'Testing'}</button>
             </div>
             <div className="mini-game-content text-center">
-                <div className="card-image">
+                <div className={`card-image ${isAnimationCatching ? 'highlight' : ''}`}>
                     {   !toggle ?
                             catchAnimal !== 'empty'? 
                                 <Animal type={catchAnimal} width={200} height={150}/>
@@ -244,7 +249,7 @@ function CatchAnimal (){
                         <div className="result mt-10">
                             {totalDiamond > 0 ? 
                                 <div className="total-diamond">
-                                    <p className="text-dark">x {totalDiamond}</p><Image src="/images/diamond.png" alt="Diamond" width={60} height={60}/>
+                                    <p className="text-dark">x {totalDiamond}</p><Image src="/images/diamond.png" alt="Diamond" width={60} height={60} className="combining"/>
                                 </div>
                                 :
                                 <Image width={40} height={40} src="/images/question.svg" alt="question"/>
@@ -252,7 +257,7 @@ function CatchAnimal (){
                             {message && <p className="text-dark">{message}</p>}
                         </div> 
                     </>: <div className="total-catching">
-                        <p className="text-dark">Succes: {totalSuccessCatching} ~ {totalSuccessPercentCatching} %</p>
+                        <p className="text-dark">Success: {totalSuccessCatching} ~ {totalSuccessPercentCatching} %</p>
                         <p className="text-dark">Failed: {animals.empty} ~ {countPercentAnimals.empty} %</p>
                         </div>}
             </div>

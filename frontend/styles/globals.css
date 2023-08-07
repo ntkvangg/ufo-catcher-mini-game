@@ -233,6 +233,27 @@ input[type="text"]{
 .text-dark{
   color: #333;
 }
+
+/* Animation for catching an animal */
+/* Define the highlight animation */
+@keyframes highlightAnimation {
+  0% {
+    box-shadow: 0 0 0 transparent;
+  }
+  50% {
+    box-shadow: 0 0 10px 5px #FFD2D2
+  }
+  100% {
+    box-shadow: 0 0 0 transparent;
+  }
+}
+
+/* Apply the highlight animation to the caught animal */
+.card-image.highlight {
+  animation: highlightAnimation 1s ease-in-out;
+}
+
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
