@@ -101,12 +101,9 @@ function CatchAnimal() {
             <div className={`card-image ${isAnimationCatching ? 'highlight' : ''}`}>
                 <Image src={`/images/${catchAnimal}.svg` || ""} width={200} height={150} alt="Animal" />
             </div>
-            <Button className="button-action button-catch mb-20 mt-10 styled-catch-btn" onClick={handleCatch}>
-                <div className="wrapper-catch-button">
-                    {loading?.catch && <Spinner className="mr-1"/>}
-                    <span>Catch Animal</span>
-                </div>
-                
+            <Button className="button-action button-catch styled-catch-btn" onClick={handleCatch}>
+                {loading?.catch && <Spinner className="mr-1"/>}
+                Catch Animal
             </Button>
             <div className="wrapper-list-animal mt-10">
                 <Animals animals={animals} />
