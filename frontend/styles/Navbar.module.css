@@ -1,0 +1,48 @@
+/* Style the navbar */
+.navbar {
+    background-color: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the logo */
+.logo a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Style the navigation links */
+.navLinks {
+    list-style: none;
+    display: flex;
+}
+
+.navLinks li {
+    margin-right: 20px;
+}
+
+.navLinks li:last-child {
+    margin-right: 0;
+}
+
+.navLinks a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+.navLinks a:hover {
+    color: #ff9800;
+    cursor: pointer;
+}
+
+.active{
+    color: #ff9800 !important; 
+    font-weight: bold;
+}

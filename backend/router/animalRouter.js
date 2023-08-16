@@ -1,11 +1,11 @@
 import express from 'express';
 import Animal from '../model/animalModel.js';
-import {catchAnimal, updateCountAnimal, handleCombine}  from '../controller/animalController.js';
+import {catchAnimal, handleCombine}  from '../controller/animalController.js';
 import Diamond from '../model/diamondModel.js';
 
 const animalRouter = express.Router();
 
-animalRouter.get('/', async (req, res) => {
+animalRouter.get('/', async (req, res, next) => {
     try {
         // Find the first document (if it exists) in the Animal collection
         const animalDoc = await Animal.findOne({}).exec();
@@ -18,30 +18,19 @@ animalRouter.get('/', async (req, res) => {
         // Respond with the animal counts from the existing document
         res.json(animalDoc.toObject());
       } catch (error) {
-        console.error("Error handling /animals request:", error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 
-animalRouter.get('/catch', (req, res) => {
+animalRouter.get('/catch/:count', async(req, res, next) => {
     try{
-        const animal = catchAnimal();
-        res.json(animal);   
+        const animalObj = await catchAnimal(req.params?.count || 1);
+        res.json(animalObj);   
     }catch(error){
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 
-animalRouter.post('/', async (req, res) => {
-    try{
-        const animal = req.body.animal;
-        const data = await updateCountAnimal(animal);
-        res.json(data);
-    }catch(error){
-        res.status(500).json({ message: "Internal server error" });
-    }
-    
-});
 
 animalRouter.get('/combine', async (req, res, next) => {
     try {
@@ -59,11 +48,7 @@ animalRouter.get('/combine', async (req, res, next) => {
         }
         res.json(data);
       } catch (error) {
-        if (error.status === 403) {
-          res.status(403).json({ message: error.message, status: 403 });
-        } else {
-          res.status(500).json({ message: "Internal server error", status: 500 });
-        }
+        next(error);
     }
 });
 
@@ -77,7 +62,7 @@ animalRouter.get('/diamonds', async (req, res)=>{
       }
       res.json(diamondDoc.toObject());
     }catch(error){
-        res.status(500).json("Server error");
+        next(error);
     }
 })
 export default animalRouter;
