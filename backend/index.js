@@ -18,7 +18,8 @@ const io = new Server(server, {
         origin: ["https://ufo-catcher-mini-game.vercel.app", "http://localhost:3000"],
         methods: ["GET", "POST"], 
         allowedHeaders: ["Access-Control-Allow-Origin"]
-    }
+    },
+    transports: ["websocket"]
 });
 
 io.on("connection", (socket)=>{
