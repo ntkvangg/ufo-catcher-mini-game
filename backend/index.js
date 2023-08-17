@@ -19,7 +19,7 @@ const io = new Server(server, {
         methods: ["GET", "POST"], 
         allowedHeaders: ["Access-Control-Allow-Origin"]
     },
-    transports: ["websocket"]
+    transports: ["polling", "websocket"]
 });
 
 io.on("connection", (socket)=>{
