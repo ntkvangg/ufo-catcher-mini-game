@@ -17,6 +17,7 @@ const io = new Server(server, {
     cors: {
         origin: ["https://ufo-catcher-mini-game.vercel.app", "http://localhost:3000"],
         methods: ["GET", "POST"], 
+        allowedHeaders: ["Access-Control-Allow-Origin"]
     }
 });
 
