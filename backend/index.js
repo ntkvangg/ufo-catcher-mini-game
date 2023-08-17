@@ -3,11 +3,35 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import animalRouter from './router/animalRouter.js';
 import cors from 'cors';
+import { Server } from 'socket.io';
+import http from 'http';
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:3000',
+        methods: ["GET", "POST"], 
+    }
+});
+
+io.on("connection", (socket)=>{
+    socket.on("catch-animal-success", (data)=>{
+        socket.broadcast.emit("receive-catch-animal", data);
+    });
+    socket.on("combine", (data)=>{
+        socket.broadcast.emit('receive-combine', data);
+    })
+})
+
+server.listen(port,()=>{
+    console.log(`WebSocket server is running on port ${port}`);
+})
 
 function errorHandler(err, req, res, next) {
     console.error("Error:", err);
@@ -22,10 +46,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 mongoose.connect(process.env.MONGODB_URL, {useNewUrlParser: true, useUnifiedTopology: true});
 
-
-app.listen(port, () => {
-    console.log(`Serve at http://localhost:${port}`);
-});
 app.use('/api/animals', animalRouter);
 
 app.use('/', (req, res)=>{

@@ -1,6 +1,6 @@
+import {memo} from 'react';
 import Helpers from "@/utils/Helpers";
 import Image from "next/image";
-import Button from "./Button";
 
 
 interface Props {
@@ -16,7 +16,7 @@ const Animals = ({ animals }: Props) => {
             </div>
             <div className="count-animal">
                 {Helpers.imageAnimal.map((animal, index) => (
-                    <Button className="circle-button" key={index}>{animals[animal]}</Button>
+                    <button className="button circle-button" key={index}>{animals[animal]}</button>
                 ))}
 
             </div>
@@ -24,4 +24,4 @@ const Animals = ({ animals }: Props) => {
     )
 }
 
-export default Animals;
+export default memo(Animals);

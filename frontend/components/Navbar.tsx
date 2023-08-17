@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import styles from '@/styles/Navbar.module.css'
 import Link from "next/link";
 
-console.log(styles);
 const Navbar = ({data}: {data: any})=>{
     const router = useRouter();
     return (

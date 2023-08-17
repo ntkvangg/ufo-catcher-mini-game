@@ -2,7 +2,6 @@ import Image from "next/image";
 import { useState, useMemo } from "react";
 import Helpers from "@/utils/Helpers";
 import ResultAnimals from "@/components/Animals";
-import Button from "@/components/Button";
 
 const Testing = () => {
 
@@ -55,9 +54,9 @@ const Testing = () => {
                             <input className="input-testing" type="text" value={count} onChange={(e: any) => setCount(e.target.value)} />
                         </div>
                         <div className="card-toolbar">
-                            <Button className="button mt-1" onClick={proveWeightedRandomGenerator} disabled={isNaN(count) || !count || count < 100}>
+                            <button className="button mt-1" onClick={proveWeightedRandomGenerator} disabled={isNaN(count) || !count || count < 100}>
                                 <Image src="/images/play.svg" alt="Play Button" width={30} height={30} />
-                            </Button>
+                            </button>
                         </div>
                     </div>
                 </div>

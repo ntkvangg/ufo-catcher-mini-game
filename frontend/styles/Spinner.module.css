@@ -2,9 +2,12 @@
     border: 4px solid rgba(0, 0, 0, 0.1);
     border-left-color: #3498db; /* Change this color to your preferred loading color */
     border-radius: 50%;
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     animation: spin 1s linear infinite;
+    display: inline-block;
+    flex-shrink: 0;
+    display: inherit;
   }
   
   /* Animation for the spinner */

@@ -1,10 +1,9 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Image from "next/image";
-import Button from "@/components/Button";
 import Helpers from "@/utils/Helpers";
 import Animals from "@/components/Animals";
 import Spinner from "@/components/Spinner";
-
+import {socket} from '@/socket';
 
 function CatchAnimal() {
     const [animals, setAnimals] = useState<any>(Helpers.animals);
@@ -41,12 +40,19 @@ function CatchAnimal() {
         getDiamonds();
     }, [])
 
+    const listenerCatchAnimal = (animal: any)=>{
+        socket.emit("catch-animal-success", animal);
+    }
 
+    const listenerCombine = (isSuccess: boolean)=>{
+        socket.emit("combine", isSuccess);
+    }
 
     const handleCatch = useCallback(async () => {
         setLoading({...loading, catch: true});
         try {
             const { animal, animals } = await Helpers.fetchApi(`/api/animals/catch/${1}`);
+            listenerCatchAnimal(animal);
             setCatchAnimal(animal);
             setAnimals(animals);
             setIsCombined(checkDisableCombinebtn(animals));
@@ -59,7 +65,7 @@ function CatchAnimal() {
             handleErrorMsg(error.message);
             setLoading({...loading, catch: false});
         }
-    }, [])
+    }, [animals])
 
     const checkDisableCombinebtn = (animals: any) => {
         const totalCaughtAnimals: any = Object.values(animals).reduce((sum: any, count: any) => {
@@ -82,6 +88,7 @@ function CatchAnimal() {
         setLoading({...loading, combine: true});
         try {
             const data = await Helpers.fetchApi("/api/animals/combine");
+            listenerCombine(data.success);
             handleErrorMsg(data.success ? "Congratulations! You have extracted a diamond!" : "Oops! The combination failed.");
             if (data.success) {
                 getDiamonds();
@@ -95,26 +102,48 @@ function CatchAnimal() {
         }
     }, [isCombined])
 
-    return (
+    
 
+    useEffect(()=>{
+        const handlerCatch = (animal: any)=>{
+            setCatchAnimal(animal);
+            getAnimals();
+        }
+        const handlerCombine = (isSucess: boolean)=>{
+            if(isSucess){
+                getDiamonds();
+            }
+            getAnimals();
+        }
+        socket.on("receive-catch-animal", handlerCatch);
+        socket.on("receive-combine", handlerCombine)
+        return ()=>{
+            socket.off("receive-catch-animal", handlerCatch);
+            socket.off("receive-combine", handlerCombine);
+        }
+    }, [])
+
+    return (
+        <>
         <div className="mini-game-content text-center">
-            <div className={`card-image ${isAnimationCatching ? 'highlight' : ''}`}>
+            <div className={`card-image ${isAnimationCatching ? '' : ''}`}>
                 <Image src={`/images/${catchAnimal}.svg` || ""} width={200} height={150} alt="Animal" />
             </div>
-            <Button className="button-action button-catch styled-catch-btn" onClick={handleCatch}>
+            <button className="button button-action button-catch styled-catch-btn" onClick={handleCatch}>
                 {loading?.catch && <Spinner className="mr-1"/>}
+                {/* <Spinner/> */}
                 Catch Animal
-            </Button>
+            </button>
             <div className="wrapper-list-animal mt-10">
                 <Animals animals={animals} />
             </div>
 
-            <Button className="button-action button-combine mt-10" onClick={handleCombine} disabled={isCombined}>
-            <div className="wrapper-catch-button">
+            <button className="button button-action button-combine mt-10" onClick={handleCombine} disabled={isCombined}>
+                <div className="wrapper-catch-button">
                     {loading?.combine && <Spinner className="mr-1"/>}
                     <span>Combine</span>
                 </div>
-            </Button>
+            </button>
             <div className="result mt-10">
                 {totalDiamond > 0 ?
                     <div className="total-diamond">
@@ -126,7 +155,7 @@ function CatchAnimal() {
                 {message && <p className="text-dark">{message}</p>}
             </div>
         </div>
-
+        </>
 
     )
 }
