@@ -28,8 +28,9 @@ const io = new Server(server, {
     path: '/api/socket',
     addTrailingSlash: false
 });
-io.set("origins", '*:*');
+
 io.on("connection", (socket)=>{
+    console.log(socket.id);
     socket.on("catch-animal-success", (data)=>{
         socket.broadcast.emit("receive-catch-animal", data);
     });
