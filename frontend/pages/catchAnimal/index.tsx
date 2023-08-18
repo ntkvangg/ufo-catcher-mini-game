@@ -105,6 +105,9 @@ function CatchAnimal() {
     
 
     useEffect(()=>{
+        socket.on("connect", ()=>{
+            console.log("connected:" );
+        });
         const handlerCatch = (animal: any)=>{
             setCatchAnimal(animal);
             getAnimals();
