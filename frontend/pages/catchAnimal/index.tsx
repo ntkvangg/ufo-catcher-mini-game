@@ -110,6 +110,7 @@ function CatchAnimal() {
         });
         socket.on("connect_error", (error)=>{
             console.log(error, 'connect failed');
+            console.log("error", error.message);
         })
         const handlerCatch = (animal: any)=>{
             setCatchAnimal(animal);
