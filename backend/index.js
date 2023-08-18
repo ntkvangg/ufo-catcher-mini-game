@@ -15,11 +15,10 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: ["https://ufo-catcher-mini-game.vercel.app", "http://localhost:3000"],
+        origin: "https://ufo-catcher-mini-game.vercel.app",
         methods: ["GET", "POST"], 
-        allowedHeaders: ["Access-Control-Allow-Origin"]
-    },
-    transports: ["polling", "websocket"]
+        credentials: true
+    }
 });
 
 io.on("connection", (socket)=>{
