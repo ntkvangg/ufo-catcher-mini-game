@@ -13,6 +13,12 @@ const port = process.env.PORT || 5000;
 
 const server = http.createServer(app);
 
+app.use(cors({
+    origin: "https://ufo-catcher-mini-game.vercel.app",
+    methods: ["GET", "POST"],
+    credentials: true
+}));
+
 const io = new Server(server, {
     cors: {
         origin: "https://ufo-catcher-mini-game.vercel.app",
@@ -44,7 +50,6 @@ function errorHandler(err, req, res, next) {
 }
 
 
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 mongoose.connect(process.env.MONGODB_URL, {useNewUrlParser: true, useUnifiedTopology: true});
