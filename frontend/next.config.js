@@ -5,7 +5,8 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://ufo-catcher-mini-game-backend.vercel.app/api/:path*',
+        // destination: 'http://localhost:5000/api/:path*',
+        destination: "https://ufo-backend.onrender.com/api/:path*"
       },
     ];
   },
